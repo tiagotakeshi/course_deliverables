@@ -1,6 +1,7 @@
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from time import sleep
+import pandas as pd
 
 # links e xpaths
 WPP_Link = "https://web.whatsapp.com/"
@@ -13,7 +14,7 @@ SEND_BUTTON = '//*[@id="main"]/footer/div[1]/div[3]/button'
 # abrindo o driver/whatsapp
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get(WPP_Link)
-
+    
 # função de enviar mensagens
 def message(nome,mensagem):
     new_msg_button = driver.find_element_by_xpath(NEW_MSG_BUTTON)
@@ -28,14 +29,12 @@ def message(nome,mensagem):
     sleep(1)
     type_field = driver.find_element_by_xpath(TYPE_FIELD)
     type_field.click()
-    type_field.send_keys(mensagem)
+    type_field.send_keys("Olá, ", nome, "! O seu código é: ",mensagem)
     send_button = driver.find_element_by_xpath(SEND_BUTTON)
     send_button.click()
-    sleep(1 )
+    sleep(1)
 
-contatos = ["Teste1", "Teste2"]
-codigos = [123456, 987654]
-mensagem = "Olá {}, o seu código é {}"
+data = pd.read_excel("contatos.xlsx")
 
-for cont,cod in zip(contatos,codigos):
-    message(nome=cont, mensagem=mensagem.format(cont, cod))
+for i in range(len(data)):
+    message(str(data['nome'][i]),str(data['código'][i]))
